@@ -2,5 +2,18 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    sqlite_db_name: str = 'pomodoro.sqlite'
-    redis_password: str = 'eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81'
+    DB_HOST: str = 'localhost'
+    DB_PORT: str = 5432
+    DB_DRIVER: str = 'postgresql+psycopg2'
+    DB_USER: str = 'user'
+    DB_PASSWORD: str = 'password'
+    DB_NAME = 'database'
+
+    CACHE_HOST: str = 'localhost'
+    CACHE_PORT: int = 6379
+    CACHE_DB: int = 0
+
+    @property
+    def db_url(self):
+        return f'{self.DB_DRIVER}://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}'
+
