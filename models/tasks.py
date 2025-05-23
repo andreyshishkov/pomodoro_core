@@ -1,9 +1,8 @@
 from typing import Optional
 
-from sqlalchemy.orm import Mapped, mapped_column, declarative_base, DeclarativeBase
+from sqlalchemy.orm import Mapped, mapped_column
 
-
-Base = declarative_base()
+from database import Base
 
 
 class Task(Base):
