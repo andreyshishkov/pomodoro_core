@@ -1,4 +1,4 @@
-from .models import Task, Category
-from .database import get_db_session
+from .database import Base
+from .accessor import get_db_session
 
-__all__ = ['Task', 'Category', 'get_db_session']
+__all__ = ['Base', 'get_db_session']

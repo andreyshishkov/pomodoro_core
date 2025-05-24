@@ -3,11 +3,11 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     DB_HOST: str = 'localhost'
-    DB_PORT: str = 5432
+    DB_PORT: int = 5432
     DB_DRIVER: str = 'postgresql+psycopg2'
     DB_USER: str = 'user'
     DB_PASSWORD: str = 'password'
-    DB_NAME = 'database'
+    DB_NAME: str = 'database'
 
     CACHE_HOST: str = 'localhost'
     CACHE_PORT: int = 6379
