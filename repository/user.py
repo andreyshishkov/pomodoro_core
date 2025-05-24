@@ -1,8 +1,29 @@
+from sqlalchemy import insert, select
+from sqlalchemy.orm import Session
+
 from dataclasses import dataclass
+from models import UserProfile
 
 
 @dataclass
 class UserRepository:
-    def create_user(self, username: str, password: str) -> User:
-        pass
+    db_session: Session
+    def create_user(self, username: str, password: str, access_token: str) -> UserProfile:
+        query = insert(UserProfile).values(
+            username=username,
+            password=password,
+            access_token=access_token,
+        ).returning(UserProfile.id)
+
+        with self.db_session() as session:
+            result = session.execute(query)
+            user_id = result.scalar_one()
+            session.commit()
+            session.flush()
+            return self.get_user(user_id)
+
+    def get_user(self, user_id: int) -> UserProfile | None:
+        query = select(UserProfile).where(UserProfile.id == user_id)
+        with self.db_session() as session:
+            return session.execute(query).scalar_one_or_none()
         
