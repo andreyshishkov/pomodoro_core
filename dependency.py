@@ -5,6 +5,8 @@ from cache import get_redis_connection
 from service import TaskService, UserService
 from sqlalchemy.orm import Session
 
+from service.auth import AuthService
+
 
 def get_task_repository() -> TaskRepository:
     db_session = get_db_session()
@@ -34,3 +36,9 @@ def get_user_service(
         user_repository: UserRepository = Depends(get_user_repository)
 ) -> UserService:
     return UserService(user_repository=user_repository)
+
+
+def get_auth_service(
+        user_repository: UserRepository = Depends(get_user_repository)
+):
+    return AuthService(user_repository=user_repository)
