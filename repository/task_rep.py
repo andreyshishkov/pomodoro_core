@@ -15,6 +15,12 @@ class TaskRepository:
             task: Task = session.execute(query).scalar_one_or_none()
         return task
 
+    def get_user_task(self, user_id: int, task_id: int) -> Task | None:
+        query = select(Task).where(Task.id == task_id, Task.user_id == user_id)
+        with self.db_session() as session:
+            task: Task = session.execute(query).scalar_one_or_none()
+        return task
+
     def get_tasks(self) -> list[Task]:
         with self.db_session() as session:
             tasks: list[Task] = session.execute(select(Task)).scalars().all()
