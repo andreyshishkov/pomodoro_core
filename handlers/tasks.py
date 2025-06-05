@@ -29,18 +29,20 @@ async def create_task(
 async def update_task(
         task_id: int,
         name: str,
-        task_repository: Annotated[TaskRepository, Depends(get_task_repository)]
+        task_service: Annotated[TaskService, Depends(get_task_service)],
+        user_id: int = Depends(get_request_user_id)
 ):
-    return task_repository.update_task_name(task_id, name)
+    return task_service.update_task_name(task_id, name, user_id)
 
 
 @task_router.patch('/{task_id}', response_model=TaskSchema)
 async def patch_task(
         task_id: int,
         name: str,
-        task_repository: Annotated[TaskRepository, Depends(get_task_repository)]
+        task_service: Annotated[TaskService, Depends(get_task_service)],
+        user_id: int = Depends(get_request_user_id)
 ):
-    return task_repository.update_task_name(task_id, name)
+    return task_service.update_task_name(task_id, name, user_id)
 
 
 @task_router.delete('/{task_id}')
