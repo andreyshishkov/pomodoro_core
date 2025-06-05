@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, delete, update
 from database import get_db_session
 from models import Task, Category
-from schemas.task import TaskSchema
+from schemas import TaskSchema, TaskCreateSchema
 
 
 class TaskRepository:
@@ -13,27 +13,34 @@ class TaskRepository:
         query = select(Task).where(Task.id == task_id)
         with self.db_session() as session:
             task: Task = session.execute(query).scalar_one_or_none()
-        return  task
+        return task
+
+    def get_user_task(self, user_id: int, task_id: int) -> Task | None:
+        query = select(Task).where(Task.id == task_id, Task.user_id == user_id)
+        with self.db_session() as session:
+            task: Task = session.execute(query).scalar_one_or_none()
+        return task
 
     def get_tasks(self) -> list[Task]:
         with self.db_session() as session:
             tasks: list[Task] = session.execute(select(Task)).scalars().all()
         return tasks
 
-    def create_task(self, task: TaskSchema) -> int:
+    def create_task(self, task: TaskCreateSchema, user_id: int) -> int:
         task_db_row = Task(
             name=task.name,
             pomodoro_number=task.pomodoro_number,
             category_id=task.category_id,
+            user_id=user_id,
         )
         with self.db_session() as session:
             session.add(task_db_row)
             session.commit()
             return task_db_row.id
 
-    def delete_task(self, task_id: int) -> None:
+    def delete_task(self, task_id: int, user_id: int) -> None:
         with self.db_session() as session:
-            session.execute(delete(Task).where(Task.id == task_id))
+            session.execute(delete(Task).where(Task.id == task_id, Task.user_id == user_id))
             session.commit()
 
     def get_tasks_by_category_name(self, category_name: str) -> list[Task]:
