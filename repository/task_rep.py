@@ -38,9 +38,9 @@ class TaskRepository:
             session.commit()
             return task_db_row.id
 
-    def delete_task(self, task_id: int) -> None:
+    def delete_task(self, task_id: int, user_id: int) -> None:
         with self.db_session() as session:
-            session.execute(delete(Task).where(Task.id == task_id))
+            session.execute(delete(Task).where(Task.id == task_id, Task.user_id == user_id))
             session.commit()
 
     def get_tasks_by_category_name(self, category_name: str) -> list[Task]:
