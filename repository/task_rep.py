@@ -13,7 +13,7 @@ class TaskRepository:
         query = select(Task).where(Task.id == task_id)
         with self.db_session() as session:
             task: Task = session.execute(query).scalar_one_or_none()
-        return  task
+        return task
 
     def get_tasks(self) -> list[Task]:
         with self.db_session() as session:
