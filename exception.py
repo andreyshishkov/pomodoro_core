@@ -12,3 +12,7 @@ class TokenExpiredException(Exception):
 
 class TokenNotCorrectedError(Exception):
     detail = "Token is not corrected"
+
+
+class TaskNotFoundedException(Exception):
+    detail = "Task is not founded"
