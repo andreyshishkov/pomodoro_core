@@ -1,5 +1,6 @@
 from repository import TaskRepository, CacheTask
 from schemas import TaskSchema, TaskCreateSchema
+from exception import TaskNotFoundedException
 
 from dataclasses import dataclass
 
@@ -20,4 +21,12 @@ class TaskService:
     def create_task(self, body: TaskCreateSchema, user_id: int) -> TaskSchema:
         task_id = self.task_repository.create_task(body, user_id)
         task = self.task_repository.get_task(task_id)
+        return TaskSchema.model_validate(task)
+
+    def update_task_name(self, task_id: int, name: str, user_id: int) -> TaskSchema:
+        task = self.task_repository.get_user_task(user_id, task_id)
+        if not task:
+            raise TaskNotFoundedException
+
+        task = self.task_repository.update_task_name(task_id, name)
         return TaskSchema.model_validate(task)
