@@ -5,7 +5,7 @@ from os import access
 
 from jose import jwt, JWTError
 
-from client import GoogleClient
+from client import GoogleClient, YandexClient
 from models import UserProfile
 from schemas import UserLoginSchema, UserCreateSchema
 
@@ -20,6 +20,7 @@ class AuthService:
     user_repository: UserRepository
     settings: Settings
     google_client: GoogleClient
+    yandex_client: YandexClient
 
     def login(self, username: str, password: str) -> UserLoginSchema:
         user = self.user_repository.get_user_by_username(username)
@@ -44,6 +45,23 @@ class AuthService:
         access_token = self.generate_access_token(user_id=created_user.id)
         return UserLoginSchema(user_id=user.id, access_token=access_token)
 
+
+    def get_yandex_redirect_url(self) -> str:
+        return self.settings.yandex_redirect_url
+
+    def yandex_auth(self, code: str):
+        user_data = self.yandex_client.get_user_info(code)
+        if user := self.user_repository.get_user_by_email(email=user_data.default_email):
+            access_token = self.generate_access_token(user_id=user.id)
+            return UserLoginSchema(user_id=user.id, access_token=access_token)
+
+        create_user_data = UserCreateSchema(
+            email=user_data.default_email,
+            name=user_data.name,
+        )
+        created_user = self.user_repository.create_user(create_user_data)
+        access_token = self.generate_access_token(user_id=created_user.id)
+        return UserLoginSchema(user_id=user.id, access_token=access_token)
 
     @staticmethod
     def _validate_auth_user(user: UserProfile, password: str) -> None:
