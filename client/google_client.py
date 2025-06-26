@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-import requests
+import httpx
 
 from settings import Settings
 from schemas import GoogleUserData
@@ -9,17 +9,18 @@ from schemas import GoogleUserData
 class GoogleClient:
     settings: Settings
 
-    def get_user_info(self, code) -> GoogleUserData:
-        access_token = self._get_user_access_token(code)
+    async def get_user_info(self, code) -> GoogleUserData:
+        access_token: str = await self._get_user_access_token(code)
         url = f'https://www.googleapis.com/oauth2/v1/userinfo'
-        user_info = requests.get(
-            url,
-            headers={'Authorization': f'Bearer {access_token}'}
-        )
+        async with httpx.AsyncClient() as client:
+            user_info = await client.get(
+                url,
+                headers={'Authorization': f'Bearer {access_token}'}
+            )
         return GoogleUserData(**user_info.json())
 
 
-    def _get_user_access_token(self, code: str) -> str:
+    async def _get_user_access_token(self, code: str) -> str:
         data = {
             'code': code,
             'client_id': self.settings.GOOGLE_CLIENT_ID,
@@ -27,7 +28,8 @@ class GoogleClient:
             'redirect_uri': self.settings.GOOGLE_REDIRECT_URI,
             'grant_type': 'authorization_code',
         }
-        response = requests.post(self.settings.GOOGLE_TOKEN_URL, data=data)
+        async with httpx.AsyncClient() as client:
+            response = await client.post(self.settings.GOOGLE_TOKEN_URL, data=data)
         return response.json()['access_token']
 
 
