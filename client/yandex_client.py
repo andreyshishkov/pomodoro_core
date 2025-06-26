@@ -8,11 +8,12 @@ from schemas import YandexUserData
 @dataclass
 class YandexClient:
     settings: Settings
+    async_client: httpx.AsyncClient
 
     async def get_user_info(self, code):
         access_token: str = await self._get_user_access_token(code)
         url = f'https://login.yandex.ru/info?format=json'
-        async with httpx.AsyncClient() as client:
+        async with self.async_client as client:
             user_info = await client.get(
                 url,
                 headers={'Authorization': f'OAuth {access_token}'}

@@ -8,11 +8,12 @@ from schemas import GoogleUserData
 @dataclass
 class GoogleClient:
     settings: Settings
+    async_client: httpx.AsyncClient
 
     async def get_user_info(self, code) -> GoogleUserData:
         access_token: str = await self._get_user_access_token(code)
         url = f'https://www.googleapis.com/oauth2/v1/userinfo'
-        async with httpx.AsyncClient() as client:
+        async with self.async_client as client:
             user_info = await client.get(
                 url,
                 headers={'Authorization': f'Bearer {access_token}'}

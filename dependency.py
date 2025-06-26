@@ -1,3 +1,4 @@
+import httpx
 from fastapi import Depends, security, Security, HTTPException
 
 from client import GoogleClient, YandexClient
@@ -36,12 +37,26 @@ def get_user_repository(db_session: Session = Depends(get_db_session)) -> UserRe
     return UserRepository(db_session=db_session)
 
 
-def get_google_client() -> GoogleClient:
-    return GoogleClient(settings=Settings())
+def get_async_client() -> httpx.AsyncClient:
+    return httpx.AsyncClient()
 
 
-def get_yandex_client() -> YandexClient:
-    return YandexClient(settings=Settings())
+def get_google_client(
+        async_client:httpx.AsyncClient = Depends(get_async_client)
+) -> GoogleClient:
+    return GoogleClient(
+        settings=Settings(),
+        async_client=async_client,
+    )
+
+
+def get_yandex_client(
+        async_client:httpx.AsyncClient = Depends(get_async_client)
+) -> YandexClient:
+    return YandexClient(
+        settings=Settings(),
+        async_client=async_client,
+    )
 
 
 def get_auth_service(
