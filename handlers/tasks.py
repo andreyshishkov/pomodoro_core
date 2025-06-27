@@ -13,7 +13,7 @@ task_router = APIRouter(prefix='/task', tags=['task'])
 async def get_tasks(
         task_service: Annotated[TaskService, Depends(get_task_service)],
 ):
-    return task_service.get_tasks()
+    return await task_service.get_tasks()
 
 
 @task_router.post('/', response_model=TaskSchema)
