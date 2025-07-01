@@ -8,9 +8,9 @@ from app.infrastructure.cache import get_redis_connection
 from app.service import TaskService, UserService
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.service import AuthService
-from settings import Settings
-from exception import TokenExpiredException, TokenNotCorrectedError
+from app.service.auth import AuthService
+from app.settings import Settings
+from app.exception import TokenExpiredException, TokenNotCorrectedError
 
 
 def get_task_repository(
