@@ -1,5 +1,5 @@
-from app.repository import TaskRepository, CacheTask
-from app.schemas import TaskSchema, TaskCreateSchema
+from app.tasks.repository import TaskRepository, CacheTask
+from app.tasks.schema import TaskSchema, TaskCreateSchema
 from app.exception import TaskNotFoundedException
 
 from dataclasses import dataclass

@@ -3,8 +3,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 
-from app.schemas import UserLoginSchema, UserCreateSchema
-from app.service.auth import AuthService
+from app.users.user_profile.schema import UserLoginSchema, UserCreateSchema
+from app.users.auth.service import AuthService
 from app.dependency import get_auth_service
 from app.exception import UserNotFoundException, UserNotCorrectPasswordException
 
@@ -63,13 +63,3 @@ async def yandex_login(
     redirect_url = auth_service.get_yandex_redirect_url()
     print(redirect_url)
     return RedirectResponse(redirect_url)
-
-
-@router.get(
-    '/yandex-auth'
-)
-async def yandex_auth(
-        auth_service: Annotated[AuthService, Depends(get_auth_service)],
-        code: str
-):
-    return await auth_service.yandex_auth(code=code)
