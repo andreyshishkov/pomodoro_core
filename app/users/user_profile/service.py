@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from app.schemas import UserLoginSchema, UserCreateSchema
-from app.repository import UserRepository
-from app.service.auth import AuthService
+from app.users.user_profile.schema import UserLoginSchema, UserCreateSchema
+from app.tasks.repository import UserRepository
+from app.users.auth.service import AuthService
 
 
 @dataclass
