@@ -34,3 +34,12 @@ async def test_generate_access_token__success(auth_service: AuthService, setting
     decoded_user_id = decode_access_token.get('user_id')
 
     assert user_id == decoded_user_id
+
+
+async def test_get_user_id_from_access_token__success(auth_service: AuthService):
+    user_id = 1
+
+    access_token = auth_service.generate_access_token(user_id=user_id)
+    decoded_user_id = auth_service.get_user_id_from_access_token(access_token)
+
+    assert user_id == decoded_user_id
