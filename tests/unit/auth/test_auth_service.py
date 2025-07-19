@@ -4,6 +4,8 @@ from jose import jwt
 
 from app.settings import Settings
 from app.users.auth.service import AuthService
+from app.users.user_profile.models import UserProfile
+from app.users.user_profile.schema import UserLoginSchema
 from tests.fixtures.auth.auth_service import auth_service
 
 pytestmark = pytest.mark.asyncio
@@ -43,3 +45,23 @@ async def test_get_user_id_from_access_token__success(auth_service: AuthService)
     decoded_user_id = auth_service.get_user_id_from_access_token(access_token)
 
     assert user_id == decoded_user_id
+
+
+async def test_google_auth__success(auth_service: AuthService):
+    code = 'fake_code'
+
+    user = await auth_service.google_auth(code=code)
+    decoded_user_id = auth_service.get_user_id_from_access_token(user.access_token)
+
+    assert user.user_id == decoded_user_id
+    assert isinstance(user, UserLoginSchema)
+
+
+async def test_yandex_auth__success(auth_service: AuthService):
+    code = 'fake_code'
+
+    user = await auth_service.yandex_auth(code=code)
+    decoded_user_id = auth_service.get_user_id_from_access_token(user.access_token)
+
+    assert user.user_id == decoded_user_id
+    assert isinstance(user, UserLoginSchema)
