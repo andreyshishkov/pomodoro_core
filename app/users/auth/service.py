@@ -42,7 +42,7 @@ class AuthService:
         )
         created_user = await self.user_repository.create_user(create_user_data)
         access_token = self.generate_access_token(user_id=created_user.id)
-        return UserLoginSchema(user_id=user.id, access_token=access_token)
+        return UserLoginSchema(user_id=created_user.id, access_token=access_token)
 
 
     def get_yandex_redirect_url(self) -> str:
@@ -60,7 +60,7 @@ class AuthService:
         )
         created_user = await self.user_repository.create_user(create_user_data)
         access_token = self.generate_access_token(user_id=created_user.id)
-        return UserLoginSchema(user_id=user.id, access_token=access_token)
+        return UserLoginSchema(user_id=created_user.id, access_token=access_token)
 
     @staticmethod
     def _validate_auth_user(user: UserProfile, password: str) -> None:
