@@ -1,0 +1,22 @@
+services:
+  postgres_db-test:
+    image: postgres:latest
+    container_name: postgres_db-test
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data-test:/var/lib/postgresql/data
+
+  cache-test:
+    image: redis:6.2-alpine
+    container_name: redis-test
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - ./redis_cache-test:/data
