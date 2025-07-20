@@ -4,13 +4,13 @@ from app.users.auth.service import AuthService
 
 
 @pytest.fixture
-def auth_service(
+def mock_auth_service(
         google_client,
         yandex_client,
-        user_repository,
+        fake_user_repository,
 ):
     return AuthService(
-        user_repository=user_repository,
+        user_repository=fake_user_repository,
         settings=Settings(),
         google_client=google_client,
         yandex_client=yandex_client,
